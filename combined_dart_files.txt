@@ -1,0 +1,3341 @@
+====================================================================
+ОБЪЕДИНЕННЫЕ DART ФАЙЛЫ
+Сгенерировано: Tue Aug 26 01:42:37 MSK 2025
+Исходная директория: /Users/maxxkim/Development/riverpod
+====================================================================
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./.dart_tool/build/entrypoint/build.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// @dart=3.6
+// ignore_for_file: directives_ordering
+// build_runner >=2.4.16
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:build_runner_core/build_runner_core.dart' as _i1;
+import 'package:riverpod_generator/builder.dart' as _i2;
+import 'package:retrofit_generator/retrofit_generator.dart' as _i3;
+import 'package:freezed/builder.dart' as _i4;
+import 'package:json_serializable/builder.dart' as _i5;
+import 'package:source_gen/builder.dart' as _i6;
+import 'package:auto_route_generator/builder.dart' as _i7;
+import 'dart:isolate' as _i8;
+import 'package:build_runner/src/build_script_generate/build_process_state.dart'
+    as _i9;
+import 'package:build_runner/build_runner.dart' as _i10;
+import 'dart:io' as _i11;
+
+final _builders = <_i1.BuilderApplication>[
+  _i1.apply(
+    r'riverpod_generator:riverpod_generator',
+    [_i2.riverpodBuilder],
+    _i1.toDependentsOf(r'riverpod_generator'),
+    hideOutput: true,
+    appliesBuilders: const [r'source_gen:combining_builder'],
+  ),
+  _i1.apply(
+    r'retrofit_generator:retrofit_generator',
+    [_i3.retrofitBuilder],
+    _i1.toDependentsOf(r'retrofit_generator'),
+    hideOutput: true,
+    appliesBuilders: const [r'source_gen:combining_builder'],
+  ),
+  _i1.apply(
+    r'freezed:freezed',
+    [_i4.freezed],
+    _i1.toDependentsOf(r'freezed'),
+    hideOutput: false,
+  ),
+  _i1.apply(
+    r'json_serializable:json_serializable',
+    [_i5.jsonSerializable],
+    _i1.toDependentsOf(r'json_serializable'),
+    hideOutput: true,
+    appliesBuilders: const [r'source_gen:combining_builder'],
+  ),
+  _i1.apply(
+    r'source_gen:combining_builder',
+    [_i6.combiningBuilder],
+    _i1.toNoneByDefault(),
+    hideOutput: false,
+    appliesBuilders: const [r'source_gen:part_cleanup'],
+  ),
+  _i1.apply(
+    r'auto_route_generator:auto_route_generator',
+    [_i7.autoRouteBuilder],
+    _i1.toDependentsOf(r'auto_route_generator'),
+    hideOutput: true,
+  ),
+  _i1.apply(
+    r'auto_route_generator:auto_router_module_generator',
+    [_i7.autoRouterModuleBuilder],
+    _i1.toDependentsOf(r'auto_route_generator'),
+    hideOutput: false,
+  ),
+  _i1.apply(
+    r'auto_route_generator:auto_router_generator',
+    [_i7.autoRouterBuilder],
+    _i1.toDependentsOf(r'auto_route_generator'),
+    hideOutput: false,
+  ),
+  _i1.applyPostProcess(
+    r'source_gen:part_cleanup',
+    _i6.partCleanup,
+  ),
+];
+void main(
+  List<String> args, [
+  _i8.SendPort? sendPort,
+]) async {
+  await _i9.buildProcessState.receive(sendPort);
+  _i9.buildProcessState.isolateExitCode = await _i10.run(
+    args,
+    _builders,
+  );
+  _i11.exitCode = _i9.buildProcessState.isolateExitCode!;
+  await _i9.buildProcessState.send(sendPort);
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./.dart_tool/dartpad/web_plugin_registrant.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// Flutter web plugin registrant file.
+//
+// Generated file. Do not edit.
+//
+
+// ignore_for_file: type=lint
+
+void registerPlugins() {}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/core/constants/api_constants.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+class ApiConstants {
+  static const String baseUrl = 'https://jsonplaceholder.typicode.com';
+  static const Duration connectTimeout = Duration(seconds: 10);
+  static const Duration receiveTimeout = Duration(seconds: 10);
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/core/error/exceptions.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+class ServerException implements Exception {
+  final String? message;
+  ServerException([this.message]);
+}
+
+class CacheException implements Exception {
+  final String? message;
+  CacheException([this.message]);
+}
+
+class NetworkException implements Exception {
+  final String? message;
+  NetworkException([this.message]);
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/core/error/failures.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:equatable/equatable.dart';
+
+abstract class Failure extends Equatable {
+  final String message;
+  
+  const Failure(this.message);
+  
+  @override
+  List<Object> get props => [message];
+}
+
+class ServerFailure extends Failure {
+  const ServerFailure(super.message);
+}
+
+class CacheFailure extends Failure {
+  const CacheFailure(super.message);
+}
+
+class NetworkFailure extends Failure {
+  const NetworkFailure(super.message);
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/core/network/api_client.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/features/users/data/models/user_model.dart';
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
+
+part 'api_client.g.dart';
+
+@RestApi()
+abstract class ApiClient {
+  factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
+  
+  @GET('/users')
+  Future<List<UserModel>> getUsers();
+  
+  @GET('/users/{id}')
+  Future<UserModel> getUserById(@Path('id') int id);
+  
+  @POST('/users')
+  Future<UserModel> createUser(@Body() UserModel user);
+  
+  @PUT('/users/{id}')
+  Future<UserModel> updateUser(@Path('id') int id, @Body() UserModel user);
+  
+  @DELETE('/users/{id}')
+  Future<void> deleteUser(@Path('id') int id);
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/core/network/api_client.g.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'api_client.dart';
+
+// **************************************************************************
+// RetrofitGenerator
+// **************************************************************************
+
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
+
+class _ApiClient implements ApiClient {
+  _ApiClient(
+    this._dio, {
+    this.baseUrl,
+    this.errorLogger,
+  });
+
+  final Dio _dio;
+
+  String? baseUrl;
+
+  final ParseErrorLogger? errorLogger;
+
+  @override
+  Future<List<UserModel>> getUsers() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<UserModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/users',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<UserModel> _value;
+    try {
+      _value = _result.data!
+          .map((dynamic i) => UserModel.fromJson(i as Map<String, dynamic>))
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<UserModel> getUserById(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<UserModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/users/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late UserModel _value;
+    try {
+      _value = UserModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<UserModel> createUser(UserModel user) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = user;
+    final _options = _setStreamType<UserModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/users',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late UserModel _value;
+    try {
+      _value = UserModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<UserModel> updateUser(
+    int id,
+    UserModel user,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = user;
+    final _options = _setStreamType<UserModel>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/users/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late UserModel _value;
+    try {
+      _value = UserModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<void> deleteUser(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<void>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/users/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    await _dio.fetch<void>(_options);
+  }
+
+  RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
+    if (T != dynamic &&
+        !(requestOptions.responseType == ResponseType.bytes ||
+            requestOptions.responseType == ResponseType.stream)) {
+      if (T == String) {
+        requestOptions.responseType = ResponseType.plain;
+      } else {
+        requestOptions.responseType = ResponseType.json;
+      }
+    }
+    return requestOptions;
+  }
+
+  String _combineBaseUrls(
+    String dioBaseUrl,
+    String? baseUrl,
+  ) {
+    if (baseUrl == null || baseUrl.trim().isEmpty) {
+      return dioBaseUrl;
+    }
+
+    final url = Uri.parse(baseUrl);
+
+    if (url.isAbsolute) {
+      return url.toString();
+    }
+
+    return Uri.parse(dioBaseUrl).resolveUri(url).toString();
+  }
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/core/router/app_router.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:auto_route/auto_route.dart';
+import 'package:clean_arch_app/features/users/presentation/pages/user_detail_page.dart';
+import 'package:clean_arch_app/features/users/presentation/pages/user_list_page.dart';
+import 'package:flutter/material.dart';
+
+part 'app_router.gr.dart';
+
+@AutoRouterConfig(replaceInRouteName: 'Page,Route')
+class AppRouter extends RootStackRouter {
+  @override
+  List<AutoRoute> get routes => [
+    AutoRoute(page: UsersListRoute.page, initial: true),
+    AutoRoute(page: UserDetailRoute.page),
+  ];
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/core/router/app_router.gr.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+// **************************************************************************
+// AutoRouterGenerator
+// **************************************************************************
+
+// ignore_for_file: type=lint
+// coverage:ignore-file
+
+part of 'app_router.dart';
+
+/// generated route for
+/// [UserDetailPage]
+class UserDetailRoute extends PageRouteInfo<UserDetailRouteArgs> {
+  UserDetailRoute({
+    Key? key,
+    required int userId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          UserDetailRoute.name,
+          args: UserDetailRouteArgs(
+            key: key,
+            userId: userId,
+          ),
+          rawPathParams: {'id': userId},
+          initialChildren: children,
+        );
+
+  static const String name = 'UserDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<UserDetailRouteArgs>(
+          orElse: () => UserDetailRouteArgs(userId: pathParams.getInt('id')));
+      return UserDetailPage(
+        key: args.key,
+        userId: args.userId,
+      );
+    },
+  );
+}
+
+class UserDetailRouteArgs {
+  const UserDetailRouteArgs({
+    this.key,
+    required this.userId,
+  });
+
+  final Key? key;
+
+  final int userId;
+
+  @override
+  String toString() {
+    return 'UserDetailRouteArgs{key: $key, userId: $userId}';
+  }
+}
+
+/// generated route for
+/// [UsersListPage]
+class UsersListRoute extends PageRouteInfo<void> {
+  const UsersListRoute({List<PageRouteInfo>? children})
+      : super(
+          UsersListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'UsersListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UsersListPage();
+    },
+  );
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/data/datasources/user_remote_datasource.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/core/error/exceptions.dart';
+import 'package:clean_arch_app/core/network/api_client.dart';
+import 'package:dio/dio.dart';
+import '../models/user_model.dart';
+
+abstract class UserRemoteDataSource {
+  Future<List<UserModel>> getUsers();
+  Future<UserModel> getUserById(int id);
+}
+
+class UserRemoteDataSourceImpl implements UserRemoteDataSource {
+  final ApiClient apiClient;
+  
+  UserRemoteDataSourceImpl({required this.apiClient});
+  
+  @override
+  Future<List<UserModel>> getUsers() async {
+    try {
+      return await apiClient.getUsers();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw NetworkException('Connection timeout');
+      }
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException('Unexpected error occurred');
+    }
+  }
+  
+  @override
+  Future<UserModel> getUserById(int id) async {
+    try {
+      return await apiClient.getUserById(id);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw NetworkException('Connection timeout');
+      }
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException('Unexpected error occurred');
+    }
+  }
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/data/models/user_model.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/features/users/domain/entities/user.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'user_model.freezed.dart';
+part 'user_model.g.dart';
+
+@freezed
+class UserModel with _$UserModel {
+  const UserModel._();
+  
+  const factory UserModel({
+    required int id,
+    required String name,
+    required String username,
+    required String email,
+    String? phone,
+    String? website,
+    AddressModel? address,
+    CompanyModel? company,
+  }) = _UserModel;
+  
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+  
+  User toEntity() => User(
+    id: id,
+    name: name,
+    username: username,
+    email: email,
+    phone: phone,
+    website: website,
+    address: address?.toEntity(),
+    company: company?.toEntity(),
+  );
+}
+
+@freezed
+class AddressModel with _$AddressModel {
+  const AddressModel._();
+  
+  const factory AddressModel({
+    required String street,
+    required String suite,
+    required String city,
+    required String zipcode,
+    GeoModel? geo,
+  }) = _AddressModel;
+  
+  factory AddressModel.fromJson(Map<String, dynamic> json) =>
+      _$AddressModelFromJson(json);
+  
+  Address toEntity() => Address(
+    street: street,
+    suite: suite,
+    city: city,
+    zipcode: zipcode,
+    geo: geo?.toEntity(),
+  );
+}
+
+@freezed
+class GeoModel with _$GeoModel {
+  const GeoModel._();
+  
+  const factory GeoModel({
+    required String lat,
+    required String lng,
+  }) = _GeoModel;
+  
+  factory GeoModel.fromJson(Map<String, dynamic> json) =>
+      _$GeoModelFromJson(json);
+  
+  Geo toEntity() => Geo(lat: lat, lng: lng);
+}
+
+@freezed
+class CompanyModel with _$CompanyModel {
+  const CompanyModel._();
+  
+  const factory CompanyModel({
+    required String name,
+    required String catchPhrase,
+    required String bs,
+  }) = _CompanyModel;
+  
+  factory CompanyModel.fromJson(Map<String, dynamic> json) =>
+      _$CompanyModelFromJson(json);
+  
+  Company toEntity() => Company(
+    name: name,
+    catchPhrase: catchPhrase,
+    bs: bs,
+  );
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/data/models/user_model.freezed.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'user_model.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+UserModel _$UserModelFromJson(Map<String, dynamic> json) {
+  return _UserModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$UserModel {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get username => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get website => throw _privateConstructorUsedError;
+  AddressModel? get address => throw _privateConstructorUsedError;
+  CompanyModel? get company => throw _privateConstructorUsedError;
+
+  /// Serializes this UserModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $UserModelCopyWith<UserModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UserModelCopyWith<$Res> {
+  factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) then) =
+      _$UserModelCopyWithImpl<$Res, UserModel>;
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      String username,
+      String email,
+      String? phone,
+      String? website,
+      AddressModel? address,
+      CompanyModel? company});
+
+  $AddressModelCopyWith<$Res>? get address;
+  $CompanyModelCopyWith<$Res>? get company;
+}
+
+/// @nodoc
+class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
+    implements $UserModelCopyWith<$Res> {
+  _$UserModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? username = null,
+    Object? email = null,
+    Object? phone = freezed,
+    Object? website = freezed,
+    Object? address = freezed,
+    Object? company = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      website: freezed == website
+          ? _value.website
+          : website // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as AddressModel?,
+      company: freezed == company
+          ? _value.company
+          : company // ignore: cast_nullable_to_non_nullable
+              as CompanyModel?,
+    ) as $Val);
+  }
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressModelCopyWith<$Res>? get address {
+    if (_value.address == null) {
+      return null;
+    }
+
+    return $AddressModelCopyWith<$Res>(_value.address!, (value) {
+      return _then(_value.copyWith(address: value) as $Val);
+    });
+  }
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CompanyModelCopyWith<$Res>? get company {
+    if (_value.company == null) {
+      return null;
+    }
+
+    return $CompanyModelCopyWith<$Res>(_value.company!, (value) {
+      return _then(_value.copyWith(company: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$UserModelImplCopyWith<$Res>
+    implements $UserModelCopyWith<$Res> {
+  factory _$$UserModelImplCopyWith(
+          _$UserModelImpl value, $Res Function(_$UserModelImpl) then) =
+      __$$UserModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      String username,
+      String email,
+      String? phone,
+      String? website,
+      AddressModel? address,
+      CompanyModel? company});
+
+  @override
+  $AddressModelCopyWith<$Res>? get address;
+  @override
+  $CompanyModelCopyWith<$Res>? get company;
+}
+
+/// @nodoc
+class __$$UserModelImplCopyWithImpl<$Res>
+    extends _$UserModelCopyWithImpl<$Res, _$UserModelImpl>
+    implements _$$UserModelImplCopyWith<$Res> {
+  __$$UserModelImplCopyWithImpl(
+      _$UserModelImpl _value, $Res Function(_$UserModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? username = null,
+    Object? email = null,
+    Object? phone = freezed,
+    Object? website = freezed,
+    Object? address = freezed,
+    Object? company = freezed,
+  }) {
+    return _then(_$UserModelImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      website: freezed == website
+          ? _value.website
+          : website // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as AddressModel?,
+      company: freezed == company
+          ? _value.company
+          : company // ignore: cast_nullable_to_non_nullable
+              as CompanyModel?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$UserModelImpl extends _UserModel {
+  const _$UserModelImpl(
+      {required this.id,
+      required this.name,
+      required this.username,
+      required this.email,
+      this.phone,
+      this.website,
+      this.address,
+      this.company})
+      : super._();
+
+  factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserModelImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  final String username;
+  @override
+  final String email;
+  @override
+  final String? phone;
+  @override
+  final String? website;
+  @override
+  final AddressModel? address;
+  @override
+  final CompanyModel? company;
+
+  @override
+  String toString() {
+    return 'UserModel(id: $id, name: $name, username: $username, email: $email, phone: $phone, website: $website, address: $address, company: $company)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UserModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.username, username) ||
+                other.username == username) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.website, website) || other.website == website) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.company, company) || other.company == company));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, id, name, username, email, phone, website, address, company);
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>
+      __$$UserModelImplCopyWithImpl<_$UserModelImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$UserModelImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _UserModel extends UserModel {
+  const factory _UserModel(
+      {required final int id,
+      required final String name,
+      required final String username,
+      required final String email,
+      final String? phone,
+      final String? website,
+      final AddressModel? address,
+      final CompanyModel? company}) = _$UserModelImpl;
+  const _UserModel._() : super._();
+
+  factory _UserModel.fromJson(Map<String, dynamic> json) =
+      _$UserModelImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  String get username;
+  @override
+  String get email;
+  @override
+  String? get phone;
+  @override
+  String? get website;
+  @override
+  AddressModel? get address;
+  @override
+  CompanyModel? get company;
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+AddressModel _$AddressModelFromJson(Map<String, dynamic> json) {
+  return _AddressModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AddressModel {
+  String get street => throw _privateConstructorUsedError;
+  String get suite => throw _privateConstructorUsedError;
+  String get city => throw _privateConstructorUsedError;
+  String get zipcode => throw _privateConstructorUsedError;
+  GeoModel? get geo => throw _privateConstructorUsedError;
+
+  /// Serializes this AddressModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of AddressModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $AddressModelCopyWith<AddressModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AddressModelCopyWith<$Res> {
+  factory $AddressModelCopyWith(
+          AddressModel value, $Res Function(AddressModel) then) =
+      _$AddressModelCopyWithImpl<$Res, AddressModel>;
+  @useResult
+  $Res call(
+      {String street,
+      String suite,
+      String city,
+      String zipcode,
+      GeoModel? geo});
+
+  $GeoModelCopyWith<$Res>? get geo;
+}
+
+/// @nodoc
+class _$AddressModelCopyWithImpl<$Res, $Val extends AddressModel>
+    implements $AddressModelCopyWith<$Res> {
+  _$AddressModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AddressModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? street = null,
+    Object? suite = null,
+    Object? city = null,
+    Object? zipcode = null,
+    Object? geo = freezed,
+  }) {
+    return _then(_value.copyWith(
+      street: null == street
+          ? _value.street
+          : street // ignore: cast_nullable_to_non_nullable
+              as String,
+      suite: null == suite
+          ? _value.suite
+          : suite // ignore: cast_nullable_to_non_nullable
+              as String,
+      city: null == city
+          ? _value.city
+          : city // ignore: cast_nullable_to_non_nullable
+              as String,
+      zipcode: null == zipcode
+          ? _value.zipcode
+          : zipcode // ignore: cast_nullable_to_non_nullable
+              as String,
+      geo: freezed == geo
+          ? _value.geo
+          : geo // ignore: cast_nullable_to_non_nullable
+              as GeoModel?,
+    ) as $Val);
+  }
+
+  /// Create a copy of AddressModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GeoModelCopyWith<$Res>? get geo {
+    if (_value.geo == null) {
+      return null;
+    }
+
+    return $GeoModelCopyWith<$Res>(_value.geo!, (value) {
+      return _then(_value.copyWith(geo: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$AddressModelImplCopyWith<$Res>
+    implements $AddressModelCopyWith<$Res> {
+  factory _$$AddressModelImplCopyWith(
+          _$AddressModelImpl value, $Res Function(_$AddressModelImpl) then) =
+      __$$AddressModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String street,
+      String suite,
+      String city,
+      String zipcode,
+      GeoModel? geo});
+
+  @override
+  $GeoModelCopyWith<$Res>? get geo;
+}
+
+/// @nodoc
+class __$$AddressModelImplCopyWithImpl<$Res>
+    extends _$AddressModelCopyWithImpl<$Res, _$AddressModelImpl>
+    implements _$$AddressModelImplCopyWith<$Res> {
+  __$$AddressModelImplCopyWithImpl(
+      _$AddressModelImpl _value, $Res Function(_$AddressModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AddressModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? street = null,
+    Object? suite = null,
+    Object? city = null,
+    Object? zipcode = null,
+    Object? geo = freezed,
+  }) {
+    return _then(_$AddressModelImpl(
+      street: null == street
+          ? _value.street
+          : street // ignore: cast_nullable_to_non_nullable
+              as String,
+      suite: null == suite
+          ? _value.suite
+          : suite // ignore: cast_nullable_to_non_nullable
+              as String,
+      city: null == city
+          ? _value.city
+          : city // ignore: cast_nullable_to_non_nullable
+              as String,
+      zipcode: null == zipcode
+          ? _value.zipcode
+          : zipcode // ignore: cast_nullable_to_non_nullable
+              as String,
+      geo: freezed == geo
+          ? _value.geo
+          : geo // ignore: cast_nullable_to_non_nullable
+              as GeoModel?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AddressModelImpl extends _AddressModel {
+  const _$AddressModelImpl(
+      {required this.street,
+      required this.suite,
+      required this.city,
+      required this.zipcode,
+      this.geo})
+      : super._();
+
+  factory _$AddressModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AddressModelImplFromJson(json);
+
+  @override
+  final String street;
+  @override
+  final String suite;
+  @override
+  final String city;
+  @override
+  final String zipcode;
+  @override
+  final GeoModel? geo;
+
+  @override
+  String toString() {
+    return 'AddressModel(street: $street, suite: $suite, city: $city, zipcode: $zipcode, geo: $geo)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AddressModelImpl &&
+            (identical(other.street, street) || other.street == street) &&
+            (identical(other.suite, suite) || other.suite == suite) &&
+            (identical(other.city, city) || other.city == city) &&
+            (identical(other.zipcode, zipcode) || other.zipcode == zipcode) &&
+            (identical(other.geo, geo) || other.geo == geo));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, street, suite, city, zipcode, geo);
+
+  /// Create a copy of AddressModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AddressModelImplCopyWith<_$AddressModelImpl> get copyWith =>
+      __$$AddressModelImplCopyWithImpl<_$AddressModelImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AddressModelImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _AddressModel extends AddressModel {
+  const factory _AddressModel(
+      {required final String street,
+      required final String suite,
+      required final String city,
+      required final String zipcode,
+      final GeoModel? geo}) = _$AddressModelImpl;
+  const _AddressModel._() : super._();
+
+  factory _AddressModel.fromJson(Map<String, dynamic> json) =
+      _$AddressModelImpl.fromJson;
+
+  @override
+  String get street;
+  @override
+  String get suite;
+  @override
+  String get city;
+  @override
+  String get zipcode;
+  @override
+  GeoModel? get geo;
+
+  /// Create a copy of AddressModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AddressModelImplCopyWith<_$AddressModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+GeoModel _$GeoModelFromJson(Map<String, dynamic> json) {
+  return _GeoModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$GeoModel {
+  String get lat => throw _privateConstructorUsedError;
+  String get lng => throw _privateConstructorUsedError;
+
+  /// Serializes this GeoModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of GeoModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $GeoModelCopyWith<GeoModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GeoModelCopyWith<$Res> {
+  factory $GeoModelCopyWith(GeoModel value, $Res Function(GeoModel) then) =
+      _$GeoModelCopyWithImpl<$Res, GeoModel>;
+  @useResult
+  $Res call({String lat, String lng});
+}
+
+/// @nodoc
+class _$GeoModelCopyWithImpl<$Res, $Val extends GeoModel>
+    implements $GeoModelCopyWith<$Res> {
+  _$GeoModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of GeoModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? lat = null,
+    Object? lng = null,
+  }) {
+    return _then(_value.copyWith(
+      lat: null == lat
+          ? _value.lat
+          : lat // ignore: cast_nullable_to_non_nullable
+              as String,
+      lng: null == lng
+          ? _value.lng
+          : lng // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$GeoModelImplCopyWith<$Res>
+    implements $GeoModelCopyWith<$Res> {
+  factory _$$GeoModelImplCopyWith(
+          _$GeoModelImpl value, $Res Function(_$GeoModelImpl) then) =
+      __$$GeoModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String lat, String lng});
+}
+
+/// @nodoc
+class __$$GeoModelImplCopyWithImpl<$Res>
+    extends _$GeoModelCopyWithImpl<$Res, _$GeoModelImpl>
+    implements _$$GeoModelImplCopyWith<$Res> {
+  __$$GeoModelImplCopyWithImpl(
+      _$GeoModelImpl _value, $Res Function(_$GeoModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of GeoModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? lat = null,
+    Object? lng = null,
+  }) {
+    return _then(_$GeoModelImpl(
+      lat: null == lat
+          ? _value.lat
+          : lat // ignore: cast_nullable_to_non_nullable
+              as String,
+      lng: null == lng
+          ? _value.lng
+          : lng // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$GeoModelImpl extends _GeoModel {
+  const _$GeoModelImpl({required this.lat, required this.lng}) : super._();
+
+  factory _$GeoModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$GeoModelImplFromJson(json);
+
+  @override
+  final String lat;
+  @override
+  final String lng;
+
+  @override
+  String toString() {
+    return 'GeoModel(lat: $lat, lng: $lng)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GeoModelImpl &&
+            (identical(other.lat, lat) || other.lat == lat) &&
+            (identical(other.lng, lng) || other.lng == lng));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, lat, lng);
+
+  /// Create a copy of GeoModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GeoModelImplCopyWith<_$GeoModelImpl> get copyWith =>
+      __$$GeoModelImplCopyWithImpl<_$GeoModelImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$GeoModelImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _GeoModel extends GeoModel {
+  const factory _GeoModel(
+      {required final String lat, required final String lng}) = _$GeoModelImpl;
+  const _GeoModel._() : super._();
+
+  factory _GeoModel.fromJson(Map<String, dynamic> json) =
+      _$GeoModelImpl.fromJson;
+
+  @override
+  String get lat;
+  @override
+  String get lng;
+
+  /// Create a copy of GeoModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GeoModelImplCopyWith<_$GeoModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+CompanyModel _$CompanyModelFromJson(Map<String, dynamic> json) {
+  return _CompanyModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$CompanyModel {
+  String get name => throw _privateConstructorUsedError;
+  String get catchPhrase => throw _privateConstructorUsedError;
+  String get bs => throw _privateConstructorUsedError;
+
+  /// Serializes this CompanyModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of CompanyModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $CompanyModelCopyWith<CompanyModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $CompanyModelCopyWith<$Res> {
+  factory $CompanyModelCopyWith(
+          CompanyModel value, $Res Function(CompanyModel) then) =
+      _$CompanyModelCopyWithImpl<$Res, CompanyModel>;
+  @useResult
+  $Res call({String name, String catchPhrase, String bs});
+}
+
+/// @nodoc
+class _$CompanyModelCopyWithImpl<$Res, $Val extends CompanyModel>
+    implements $CompanyModelCopyWith<$Res> {
+  _$CompanyModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of CompanyModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? catchPhrase = null,
+    Object? bs = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      catchPhrase: null == catchPhrase
+          ? _value.catchPhrase
+          : catchPhrase // ignore: cast_nullable_to_non_nullable
+              as String,
+      bs: null == bs
+          ? _value.bs
+          : bs // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$CompanyModelImplCopyWith<$Res>
+    implements $CompanyModelCopyWith<$Res> {
+  factory _$$CompanyModelImplCopyWith(
+          _$CompanyModelImpl value, $Res Function(_$CompanyModelImpl) then) =
+      __$$CompanyModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String catchPhrase, String bs});
+}
+
+/// @nodoc
+class __$$CompanyModelImplCopyWithImpl<$Res>
+    extends _$CompanyModelCopyWithImpl<$Res, _$CompanyModelImpl>
+    implements _$$CompanyModelImplCopyWith<$Res> {
+  __$$CompanyModelImplCopyWithImpl(
+      _$CompanyModelImpl _value, $Res Function(_$CompanyModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of CompanyModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? catchPhrase = null,
+    Object? bs = null,
+  }) {
+    return _then(_$CompanyModelImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      catchPhrase: null == catchPhrase
+          ? _value.catchPhrase
+          : catchPhrase // ignore: cast_nullable_to_non_nullable
+              as String,
+      bs: null == bs
+          ? _value.bs
+          : bs // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$CompanyModelImpl extends _CompanyModel {
+  const _$CompanyModelImpl(
+      {required this.name, required this.catchPhrase, required this.bs})
+      : super._();
+
+  factory _$CompanyModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CompanyModelImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String catchPhrase;
+  @override
+  final String bs;
+
+  @override
+  String toString() {
+    return 'CompanyModel(name: $name, catchPhrase: $catchPhrase, bs: $bs)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CompanyModelImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.catchPhrase, catchPhrase) ||
+                other.catchPhrase == catchPhrase) &&
+            (identical(other.bs, bs) || other.bs == bs));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, catchPhrase, bs);
+
+  /// Create a copy of CompanyModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CompanyModelImplCopyWith<_$CompanyModelImpl> get copyWith =>
+      __$$CompanyModelImplCopyWithImpl<_$CompanyModelImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CompanyModelImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _CompanyModel extends CompanyModel {
+  const factory _CompanyModel(
+      {required final String name,
+      required final String catchPhrase,
+      required final String bs}) = _$CompanyModelImpl;
+  const _CompanyModel._() : super._();
+
+  factory _CompanyModel.fromJson(Map<String, dynamic> json) =
+      _$CompanyModelImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get catchPhrase;
+  @override
+  String get bs;
+
+  /// Create a copy of CompanyModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$CompanyModelImplCopyWith<_$CompanyModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/data/models/user_model.g.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'user_model.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
+    _$UserModelImpl(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+      username: json['username'] as String,
+      email: json['email'] as String,
+      phone: json['phone'] as String?,
+      website: json['website'] as String?,
+      address: json['address'] == null
+          ? null
+          : AddressModel.fromJson(json['address'] as Map<String, dynamic>),
+      company: json['company'] == null
+          ? null
+          : CompanyModel.fromJson(json['company'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'username': instance.username,
+      'email': instance.email,
+      'phone': instance.phone,
+      'website': instance.website,
+      'address': instance.address,
+      'company': instance.company,
+    };
+
+_$AddressModelImpl _$$AddressModelImplFromJson(Map<String, dynamic> json) =>
+    _$AddressModelImpl(
+      street: json['street'] as String,
+      suite: json['suite'] as String,
+      city: json['city'] as String,
+      zipcode: json['zipcode'] as String,
+      geo: json['geo'] == null
+          ? null
+          : GeoModel.fromJson(json['geo'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$AddressModelImplToJson(_$AddressModelImpl instance) =>
+    <String, dynamic>{
+      'street': instance.street,
+      'suite': instance.suite,
+      'city': instance.city,
+      'zipcode': instance.zipcode,
+      'geo': instance.geo,
+    };
+
+_$GeoModelImpl _$$GeoModelImplFromJson(Map<String, dynamic> json) =>
+    _$GeoModelImpl(
+      lat: json['lat'] as String,
+      lng: json['lng'] as String,
+    );
+
+Map<String, dynamic> _$$GeoModelImplToJson(_$GeoModelImpl instance) =>
+    <String, dynamic>{
+      'lat': instance.lat,
+      'lng': instance.lng,
+    };
+
+_$CompanyModelImpl _$$CompanyModelImplFromJson(Map<String, dynamic> json) =>
+    _$CompanyModelImpl(
+      name: json['name'] as String,
+      catchPhrase: json['catchPhrase'] as String,
+      bs: json['bs'] as String,
+    );
+
+Map<String, dynamic> _$$CompanyModelImplToJson(_$CompanyModelImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'catchPhrase': instance.catchPhrase,
+      'bs': instance.bs,
+    };
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/data/repositories/user_repository_impl.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/core/error/exceptions.dart';
+import 'package:clean_arch_app/core/error/failures.dart';
+import 'package:clean_arch_app/features/users/data/datasources/user_remote_datasource.dart';
+import 'package:clean_arch_app/features/users/domain/entities/user.dart';
+import 'package:clean_arch_app/features/users/domain/repositories/user_repository.dart';
+import 'package:dartz/dartz.dart';
+
+class UserRepositoryImpl implements UserRepository {
+  final UserRemoteDataSource remoteDataSource;
+  
+  UserRepositoryImpl({required this.remoteDataSource});
+  
+  @override
+  Future<Either<Failure, List<User>>> getUsers() async {
+    try {
+      final userModels = await remoteDataSource.getUsers();
+      final users = userModels.map((model) => model.toEntity()).toList();
+      return Right(users);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error'));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message ?? 'Network error'));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error'));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, User>> getUserById(int id) async {
+    try {
+      final userModel = await remoteDataSource.getUserById(id);
+      return Right(userModel.toEntity());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error'));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message ?? 'Network error'));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error'));
+    }
+  }
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/domain/entities/user.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'user.freezed.dart';
+
+@freezed
+class User with _$User {
+  const factory User({
+    required int id,
+    required String name,
+    required String username,
+    required String email,
+    String? phone,
+    String? website,
+    Address? address,
+    Company? company,
+  }) = _User;
+}
+
+@freezed
+class Address with _$Address {
+  const factory Address({
+    required String street,
+    required String suite,
+    required String city,
+    required String zipcode,
+    Geo? geo,
+  }) = _Address;
+}
+
+@freezed
+class Geo with _$Geo {
+  const factory Geo({
+    required String lat,
+    required String lng,
+  }) = _Geo;
+}
+
+@freezed
+class Company with _$Company {
+  const factory Company({
+    required String name,
+    required String catchPhrase,
+    required String bs,
+  }) = _Company;
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/domain/entities/user.freezed.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'user.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+/// @nodoc
+mixin _$User {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get username => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get website => throw _privateConstructorUsedError;
+  Address? get address => throw _privateConstructorUsedError;
+  Company? get company => throw _privateConstructorUsedError;
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $UserCopyWith<User> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UserCopyWith<$Res> {
+  factory $UserCopyWith(User value, $Res Function(User) then) =
+      _$UserCopyWithImpl<$Res, User>;
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      String username,
+      String email,
+      String? phone,
+      String? website,
+      Address? address,
+      Company? company});
+
+  $AddressCopyWith<$Res>? get address;
+  $CompanyCopyWith<$Res>? get company;
+}
+
+/// @nodoc
+class _$UserCopyWithImpl<$Res, $Val extends User>
+    implements $UserCopyWith<$Res> {
+  _$UserCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? username = null,
+    Object? email = null,
+    Object? phone = freezed,
+    Object? website = freezed,
+    Object? address = freezed,
+    Object? company = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      website: freezed == website
+          ? _value.website
+          : website // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address?,
+      company: freezed == company
+          ? _value.company
+          : company // ignore: cast_nullable_to_non_nullable
+              as Company?,
+    ) as $Val);
+  }
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res>? get address {
+    if (_value.address == null) {
+      return null;
+    }
+
+    return $AddressCopyWith<$Res>(_value.address!, (value) {
+      return _then(_value.copyWith(address: value) as $Val);
+    });
+  }
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CompanyCopyWith<$Res>? get company {
+    if (_value.company == null) {
+      return null;
+    }
+
+    return $CompanyCopyWith<$Res>(_value.company!, (value) {
+      return _then(_value.copyWith(company: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
+  factory _$$UserImplCopyWith(
+          _$UserImpl value, $Res Function(_$UserImpl) then) =
+      __$$UserImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      String username,
+      String email,
+      String? phone,
+      String? website,
+      Address? address,
+      Company? company});
+
+  @override
+  $AddressCopyWith<$Res>? get address;
+  @override
+  $CompanyCopyWith<$Res>? get company;
+}
+
+/// @nodoc
+class __$$UserImplCopyWithImpl<$Res>
+    extends _$UserCopyWithImpl<$Res, _$UserImpl>
+    implements _$$UserImplCopyWith<$Res> {
+  __$$UserImplCopyWithImpl(_$UserImpl _value, $Res Function(_$UserImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? username = null,
+    Object? email = null,
+    Object? phone = freezed,
+    Object? website = freezed,
+    Object? address = freezed,
+    Object? company = freezed,
+  }) {
+    return _then(_$UserImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      website: freezed == website
+          ? _value.website
+          : website // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address?,
+      company: freezed == company
+          ? _value.company
+          : company // ignore: cast_nullable_to_non_nullable
+              as Company?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$UserImpl implements _User {
+  const _$UserImpl(
+      {required this.id,
+      required this.name,
+      required this.username,
+      required this.email,
+      this.phone,
+      this.website,
+      this.address,
+      this.company});
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  final String username;
+  @override
+  final String email;
+  @override
+  final String? phone;
+  @override
+  final String? website;
+  @override
+  final Address? address;
+  @override
+  final Company? company;
+
+  @override
+  String toString() {
+    return 'User(id: $id, name: $name, username: $username, email: $email, phone: $phone, website: $website, address: $address, company: $company)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UserImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.username, username) ||
+                other.username == username) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.website, website) || other.website == website) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.company, company) || other.company == company));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, id, name, username, email, phone, website, address, company);
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UserImplCopyWith<_$UserImpl> get copyWith =>
+      __$$UserImplCopyWithImpl<_$UserImpl>(this, _$identity);
+}
+
+abstract class _User implements User {
+  const factory _User(
+      {required final int id,
+      required final String name,
+      required final String username,
+      required final String email,
+      final String? phone,
+      final String? website,
+      final Address? address,
+      final Company? company}) = _$UserImpl;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  String get username;
+  @override
+  String get email;
+  @override
+  String? get phone;
+  @override
+  String? get website;
+  @override
+  Address? get address;
+  @override
+  Company? get company;
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$UserImplCopyWith<_$UserImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$Address {
+  String get street => throw _privateConstructorUsedError;
+  String get suite => throw _privateConstructorUsedError;
+  String get city => throw _privateConstructorUsedError;
+  String get zipcode => throw _privateConstructorUsedError;
+  Geo? get geo => throw _privateConstructorUsedError;
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $AddressCopyWith<Address> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AddressCopyWith<$Res> {
+  factory $AddressCopyWith(Address value, $Res Function(Address) then) =
+      _$AddressCopyWithImpl<$Res, Address>;
+  @useResult
+  $Res call(
+      {String street, String suite, String city, String zipcode, Geo? geo});
+
+  $GeoCopyWith<$Res>? get geo;
+}
+
+/// @nodoc
+class _$AddressCopyWithImpl<$Res, $Val extends Address>
+    implements $AddressCopyWith<$Res> {
+  _$AddressCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? street = null,
+    Object? suite = null,
+    Object? city = null,
+    Object? zipcode = null,
+    Object? geo = freezed,
+  }) {
+    return _then(_value.copyWith(
+      street: null == street
+          ? _value.street
+          : street // ignore: cast_nullable_to_non_nullable
+              as String,
+      suite: null == suite
+          ? _value.suite
+          : suite // ignore: cast_nullable_to_non_nullable
+              as String,
+      city: null == city
+          ? _value.city
+          : city // ignore: cast_nullable_to_non_nullable
+              as String,
+      zipcode: null == zipcode
+          ? _value.zipcode
+          : zipcode // ignore: cast_nullable_to_non_nullable
+              as String,
+      geo: freezed == geo
+          ? _value.geo
+          : geo // ignore: cast_nullable_to_non_nullable
+              as Geo?,
+    ) as $Val);
+  }
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GeoCopyWith<$Res>? get geo {
+    if (_value.geo == null) {
+      return null;
+    }
+
+    return $GeoCopyWith<$Res>(_value.geo!, (value) {
+      return _then(_value.copyWith(geo: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$AddressImplCopyWith<$Res> implements $AddressCopyWith<$Res> {
+  factory _$$AddressImplCopyWith(
+          _$AddressImpl value, $Res Function(_$AddressImpl) then) =
+      __$$AddressImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String street, String suite, String city, String zipcode, Geo? geo});
+
+  @override
+  $GeoCopyWith<$Res>? get geo;
+}
+
+/// @nodoc
+class __$$AddressImplCopyWithImpl<$Res>
+    extends _$AddressCopyWithImpl<$Res, _$AddressImpl>
+    implements _$$AddressImplCopyWith<$Res> {
+  __$$AddressImplCopyWithImpl(
+      _$AddressImpl _value, $Res Function(_$AddressImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? street = null,
+    Object? suite = null,
+    Object? city = null,
+    Object? zipcode = null,
+    Object? geo = freezed,
+  }) {
+    return _then(_$AddressImpl(
+      street: null == street
+          ? _value.street
+          : street // ignore: cast_nullable_to_non_nullable
+              as String,
+      suite: null == suite
+          ? _value.suite
+          : suite // ignore: cast_nullable_to_non_nullable
+              as String,
+      city: null == city
+          ? _value.city
+          : city // ignore: cast_nullable_to_non_nullable
+              as String,
+      zipcode: null == zipcode
+          ? _value.zipcode
+          : zipcode // ignore: cast_nullable_to_non_nullable
+              as String,
+      geo: freezed == geo
+          ? _value.geo
+          : geo // ignore: cast_nullable_to_non_nullable
+              as Geo?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AddressImpl implements _Address {
+  const _$AddressImpl(
+      {required this.street,
+      required this.suite,
+      required this.city,
+      required this.zipcode,
+      this.geo});
+
+  @override
+  final String street;
+  @override
+  final String suite;
+  @override
+  final String city;
+  @override
+  final String zipcode;
+  @override
+  final Geo? geo;
+
+  @override
+  String toString() {
+    return 'Address(street: $street, suite: $suite, city: $city, zipcode: $zipcode, geo: $geo)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AddressImpl &&
+            (identical(other.street, street) || other.street == street) &&
+            (identical(other.suite, suite) || other.suite == suite) &&
+            (identical(other.city, city) || other.city == city) &&
+            (identical(other.zipcode, zipcode) || other.zipcode == zipcode) &&
+            (identical(other.geo, geo) || other.geo == geo));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, street, suite, city, zipcode, geo);
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AddressImplCopyWith<_$AddressImpl> get copyWith =>
+      __$$AddressImplCopyWithImpl<_$AddressImpl>(this, _$identity);
+}
+
+abstract class _Address implements Address {
+  const factory _Address(
+      {required final String street,
+      required final String suite,
+      required final String city,
+      required final String zipcode,
+      final Geo? geo}) = _$AddressImpl;
+
+  @override
+  String get street;
+  @override
+  String get suite;
+  @override
+  String get city;
+  @override
+  String get zipcode;
+  @override
+  Geo? get geo;
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AddressImplCopyWith<_$AddressImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$Geo {
+  String get lat => throw _privateConstructorUsedError;
+  String get lng => throw _privateConstructorUsedError;
+
+  /// Create a copy of Geo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $GeoCopyWith<Geo> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GeoCopyWith<$Res> {
+  factory $GeoCopyWith(Geo value, $Res Function(Geo) then) =
+      _$GeoCopyWithImpl<$Res, Geo>;
+  @useResult
+  $Res call({String lat, String lng});
+}
+
+/// @nodoc
+class _$GeoCopyWithImpl<$Res, $Val extends Geo> implements $GeoCopyWith<$Res> {
+  _$GeoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of Geo
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? lat = null,
+    Object? lng = null,
+  }) {
+    return _then(_value.copyWith(
+      lat: null == lat
+          ? _value.lat
+          : lat // ignore: cast_nullable_to_non_nullable
+              as String,
+      lng: null == lng
+          ? _value.lng
+          : lng // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$GeoImplCopyWith<$Res> implements $GeoCopyWith<$Res> {
+  factory _$$GeoImplCopyWith(_$GeoImpl value, $Res Function(_$GeoImpl) then) =
+      __$$GeoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String lat, String lng});
+}
+
+/// @nodoc
+class __$$GeoImplCopyWithImpl<$Res> extends _$GeoCopyWithImpl<$Res, _$GeoImpl>
+    implements _$$GeoImplCopyWith<$Res> {
+  __$$GeoImplCopyWithImpl(_$GeoImpl _value, $Res Function(_$GeoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of Geo
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? lat = null,
+    Object? lng = null,
+  }) {
+    return _then(_$GeoImpl(
+      lat: null == lat
+          ? _value.lat
+          : lat // ignore: cast_nullable_to_non_nullable
+              as String,
+      lng: null == lng
+          ? _value.lng
+          : lng // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$GeoImpl implements _Geo {
+  const _$GeoImpl({required this.lat, required this.lng});
+
+  @override
+  final String lat;
+  @override
+  final String lng;
+
+  @override
+  String toString() {
+    return 'Geo(lat: $lat, lng: $lng)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GeoImpl &&
+            (identical(other.lat, lat) || other.lat == lat) &&
+            (identical(other.lng, lng) || other.lng == lng));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, lat, lng);
+
+  /// Create a copy of Geo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GeoImplCopyWith<_$GeoImpl> get copyWith =>
+      __$$GeoImplCopyWithImpl<_$GeoImpl>(this, _$identity);
+}
+
+abstract class _Geo implements Geo {
+  const factory _Geo({required final String lat, required final String lng}) =
+      _$GeoImpl;
+
+  @override
+  String get lat;
+  @override
+  String get lng;
+
+  /// Create a copy of Geo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GeoImplCopyWith<_$GeoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$Company {
+  String get name => throw _privateConstructorUsedError;
+  String get catchPhrase => throw _privateConstructorUsedError;
+  String get bs => throw _privateConstructorUsedError;
+
+  /// Create a copy of Company
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $CompanyCopyWith<Company> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $CompanyCopyWith<$Res> {
+  factory $CompanyCopyWith(Company value, $Res Function(Company) then) =
+      _$CompanyCopyWithImpl<$Res, Company>;
+  @useResult
+  $Res call({String name, String catchPhrase, String bs});
+}
+
+/// @nodoc
+class _$CompanyCopyWithImpl<$Res, $Val extends Company>
+    implements $CompanyCopyWith<$Res> {
+  _$CompanyCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of Company
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? catchPhrase = null,
+    Object? bs = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      catchPhrase: null == catchPhrase
+          ? _value.catchPhrase
+          : catchPhrase // ignore: cast_nullable_to_non_nullable
+              as String,
+      bs: null == bs
+          ? _value.bs
+          : bs // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$CompanyImplCopyWith<$Res> implements $CompanyCopyWith<$Res> {
+  factory _$$CompanyImplCopyWith(
+          _$CompanyImpl value, $Res Function(_$CompanyImpl) then) =
+      __$$CompanyImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String catchPhrase, String bs});
+}
+
+/// @nodoc
+class __$$CompanyImplCopyWithImpl<$Res>
+    extends _$CompanyCopyWithImpl<$Res, _$CompanyImpl>
+    implements _$$CompanyImplCopyWith<$Res> {
+  __$$CompanyImplCopyWithImpl(
+      _$CompanyImpl _value, $Res Function(_$CompanyImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of Company
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? catchPhrase = null,
+    Object? bs = null,
+  }) {
+    return _then(_$CompanyImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      catchPhrase: null == catchPhrase
+          ? _value.catchPhrase
+          : catchPhrase // ignore: cast_nullable_to_non_nullable
+              as String,
+      bs: null == bs
+          ? _value.bs
+          : bs // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$CompanyImpl implements _Company {
+  const _$CompanyImpl(
+      {required this.name, required this.catchPhrase, required this.bs});
+
+  @override
+  final String name;
+  @override
+  final String catchPhrase;
+  @override
+  final String bs;
+
+  @override
+  String toString() {
+    return 'Company(name: $name, catchPhrase: $catchPhrase, bs: $bs)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CompanyImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.catchPhrase, catchPhrase) ||
+                other.catchPhrase == catchPhrase) &&
+            (identical(other.bs, bs) || other.bs == bs));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, name, catchPhrase, bs);
+
+  /// Create a copy of Company
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CompanyImplCopyWith<_$CompanyImpl> get copyWith =>
+      __$$CompanyImplCopyWithImpl<_$CompanyImpl>(this, _$identity);
+}
+
+abstract class _Company implements Company {
+  const factory _Company(
+      {required final String name,
+      required final String catchPhrase,
+      required final String bs}) = _$CompanyImpl;
+
+  @override
+  String get name;
+  @override
+  String get catchPhrase;
+  @override
+  String get bs;
+
+  /// Create a copy of Company
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$CompanyImplCopyWith<_$CompanyImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/domain/repositories/user_repository.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/core/error/failures.dart';
+import 'package:clean_arch_app/features/users/domain/entities/user.dart';
+import 'package:dartz/dartz.dart';
+
+abstract class UserRepository {
+  Future<Either<Failure, List<User>>> getUsers();
+  Future<Either<Failure, User>> getUserById(int id);
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/domain/usecases/get_user_by_id.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/core/error/failures.dart';
+import 'package:clean_arch_app/features/users/domain/entities/user.dart';
+import 'package:clean_arch_app/features/users/domain/repositories/user_repository.dart';
+import 'package:dartz/dartz.dart';
+
+class GetUserById {
+  final UserRepository repository;
+  
+  GetUserById(this.repository);
+  
+  Future<Either<Failure, User>> call(int id) async {
+    return await repository.getUserById(id);
+  }
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/domain/usecases/get_users.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/core/error/failures.dart';
+import 'package:clean_arch_app/features/users/domain/entities/user.dart';
+import 'package:clean_arch_app/features/users/domain/repositories/user_repository.dart';
+import 'package:dartz/dartz.dart';
+
+class GetUsers {
+  final UserRepository repository;
+  
+  GetUsers(this.repository);
+  
+  Future<Either<Failure, List<User>>> call() async {
+    return await repository.getUsers();
+  }
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/presentation/pages/user_detail_page.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:clean_arch_app/features/users/presentation/providers/user_provider.dart';
+
+@RoutePage()
+class UserDetailPage extends ConsumerWidget {
+  final int userId;
+  
+  const UserDetailPage({
+    super.key,
+    @PathParam('id') required this.userId,
+  });
+  
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userDetailProvider(userId));
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('User Details'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      body: userAsync.when(
+        data: (user) => SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Card(
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Text(
+                        user.name.substring(0, 2).toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 32,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  _DetailRow(
+                    icon: Icons.person,
+                    label: 'Name',
+                    value: user.name,
+                  ),
+                  _DetailRow(
+                    icon: Icons.alternate_email,
+                    label: 'Username',
+                    value: user.username,
+                  ),
+                  _DetailRow(
+                    icon: Icons.email,
+                    label: 'Email',
+                    value: user.email,
+                  ),
+                  if (user.phone != null)
+                    _DetailRow(
+                      icon: Icons.phone,
+                      label: 'Phone',
+                      value: user.phone!,
+                    ),
+                  if (user.website != null)
+                    _DetailRow(
+                      icon: Icons.language,
+                      label: 'Website',
+                      value: user.website!,
+                    ),
+                  if (user.address != null) ...[
+                    const Divider(height: 32),
+                    const Text(
+                      'Address',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${user.address!.street}, ${user.address!.suite}\n'
+                      '${user.address!.city}, ${user.address!.zipcode}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                  if (user.company != null) ...[
+                    const Divider(height: 32),
+                    const Text(
+                      'Company',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      user.company!.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      user.company!.catchPhrase,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 60, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(
+                'Error: ${error.toString()}',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.invalidate(userDetailProvider(userId)),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.grey[600]),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/presentation/pages/user_list_page.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:auto_route/auto_route.dart';
+import 'package:clean_arch_app/core/router/app_router.dart';
+import 'package:clean_arch_app/features/users/presentation/providers/user_provider.dart';
+import 'package:clean_arch_app/features/users/presentation/widgets/user_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+@RoutePage()
+class UsersListPage extends ConsumerWidget {
+  const UsersListPage({super.key});
+  
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final usersAsync = ref.watch(usersListProvider);
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Users'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      body: usersAsync.when(
+        data: (users) => RefreshIndicator(
+          onRefresh: () => ref.refresh(usersListProvider.future),
+          child: ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              final user = users[index];
+              return UserCard(
+                user: user,
+                onTap: () {
+                  context.router.push(UserDetailRoute(userId: user.id));
+                },
+              );
+            },
+          ),
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 60, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(
+                'Error: ${error.toString()}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.invalidate(usersListProvider),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/presentation/providers/user_provider.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/core/constants/api_constants.dart';
+import 'package:clean_arch_app/core/network/api_client.dart';
+import 'package:clean_arch_app/features/users/data/datasources/user_remote_datasource.dart';
+import 'package:clean_arch_app/features/users/data/repositories/user_repository_impl.dart';
+import 'package:clean_arch_app/features/users/domain/entities/user.dart';
+import 'package:clean_arch_app/features/users/domain/repositories/user_repository.dart';
+import 'package:clean_arch_app/features/users/domain/usecases/get_user_by_id.dart';
+import 'package:clean_arch_app/features/users/domain/usecases/get_users.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+// Dio Provider
+final dioProvider = Provider<Dio>((ref) {
+  final dio = Dio(BaseOptions(
+    baseUrl: ApiConstants.baseUrl,
+    connectTimeout: ApiConstants.connectTimeout,
+    receiveTimeout: ApiConstants.receiveTimeout,
+  ));
+  
+  dio.interceptors.add(PrettyDioLogger(
+    requestHeader: true,
+    requestBody: true,
+    responseHeader: true,
+  ));
+  
+  return dio;
+});
+
+// API Client Provider
+final apiClientProvider = Provider<ApiClient>((ref) {
+  final dio = ref.watch(dioProvider);
+  return ApiClient(dio, baseUrl: ApiConstants.baseUrl);
+});
+
+// Data Source Provider
+final userRemoteDataSourceProvider = Provider<UserRemoteDataSource>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return UserRemoteDataSourceImpl(apiClient: apiClient);
+});
+
+// Repository Provider
+final userRepositoryProvider = Provider<UserRepository>((ref) {
+  final remoteDataSource = ref.watch(userRemoteDataSourceProvider);
+  return UserRepositoryImpl(remoteDataSource: remoteDataSource);
+});
+
+// Use Cases Providers
+final getUsersUseCaseProvider = Provider<GetUsers>((ref) {
+  final repository = ref.watch(userRepositoryProvider);
+  return GetUsers(repository);
+});
+
+final getUserByIdUseCaseProvider = Provider<GetUserById>((ref) {
+  final repository = ref.watch(userRepositoryProvider);
+  return GetUserById(repository);
+});
+
+// State Providers
+final usersListProvider = FutureProvider<List<User>>((ref) async {
+  final getUsers = ref.watch(getUsersUseCaseProvider);
+  final result = await getUsers();
+  
+  return result.fold(
+    (failure) => throw Exception(failure.message),
+    (users) => users,
+  );
+});
+
+final userDetailProvider = FutureProvider.family<User, int>((ref, id) async {
+  final getUserById = ref.watch(getUserByIdUseCaseProvider);
+  final result = await getUserById(id);
+  
+  return result.fold(
+    (failure) => throw Exception(failure.message),
+    (user) => user,
+  );
+});
+
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/features/users/presentation/widgets/user_card.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:flutter/material.dart';
+import '../../domain/entities/user.dart';
+
+class UserCard extends StatelessWidget {
+  final User user;
+  final VoidCallback onTap;
+  
+  const UserCard({
+    super.key,
+    required this.user,
+    required this.onTap,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: ListTile(
+        onTap: onTap,
+        leading: CircleAvatar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: Text(
+            user.name.substring(0, 2).toUpperCase(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        title: Text(
+          user.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('@${user.username}'),
+            Text(
+              user.email,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        isThreeLine: true,
+      ),
+    );
+  }
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./lib/main.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+import 'package:clean_arch_app/core/router/app_router.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+void main() {
+  runApp(
+    ProviderScope(
+      observers: [
+        ProviderLogger(),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+
+class ProviderLogger extends ProviderObserver {
+  @override
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    print('${provider.name ?? provider.runtimeType}: $newValue');
+  }
+}
+
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
+  
+  final _appRouter = AppRouter();
+  
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Clean Architecture Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        useMaterial3: true,
+      ),
+      routerConfig: _appRouter.config(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+# КОНЕЦ ФАЙЛА: 
+
+
+###################################################################
+# ФАЙЛ: 
+# ПОЛНЫЙ ПУТЬ: ./test/widget_test.dart
+# РАЗМЕР:  байт
+# ИЗМЕНЕН: 
+###################################################################
+
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility in the flutter_test package. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
+import 'package:clean_arch_app/main.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+
+void main() {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MyApp());
+
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+  });
+}
+
+# КОНЕЦ ФАЙЛА: 
+
+
+====================================================================
+ИТОГО ОБРАБОТАНО ФАЙЛОВ: 0
+ЗАВЕРШЕНО: Tue Aug 26 01:42:37 MSK 2025
+====================================================================
