@@ -15,8 +15,6 @@ class UserModel with _$UserModel {
     required String email,
     String? phone,
     String? website,
-    AddressModel? address,
-    CompanyModel? company,
   }) = _UserModel;
   
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -29,66 +27,36 @@ class UserModel with _$UserModel {
     email: email,
     phone: phone,
     website: website,
-    address: address?.toEntity(),
-    company: company?.toEntity(),
   );
+  
+  @override
+  // TODO: implement email
+  String get email => throw UnimplementedError();
+  
+  @override
+  // TODO: implement id
+  int get id => throw UnimplementedError();
+  
+  @override
+  // TODO: implement name
+  String get name => throw UnimplementedError();
+  
+  @override
+  // TODO: implement phone
+  String? get phone => throw UnimplementedError();
+  
+  @override
+  Map<String, dynamic> toJson() {
+    // TODO: implement toJson
+    throw UnimplementedError();
+  }
+  
+  @override
+  // TODO: implement username
+  String get username => throw UnimplementedError();
+  
+  @override
+  // TODO: implement website
+  String? get website => throw UnimplementedError();
 }
 
-@freezed
-class AddressModel with _$AddressModel {
-  const AddressModel._();
-  
-  const factory AddressModel({
-    required String street,
-    required String suite,
-    required String city,
-    required String zipcode,
-    GeoModel? geo,
-  }) = _AddressModel;
-  
-  factory AddressModel.fromJson(Map<String, dynamic> json) =>
-      _$AddressModelFromJson(json);
-  
-  Address toEntity() => Address(
-    street: street,
-    suite: suite,
-    city: city,
-    zipcode: zipcode,
-    geo: geo?.toEntity(),
-  );
-}
-
-@freezed
-class GeoModel with _$GeoModel {
-  const GeoModel._();
-  
-  const factory GeoModel({
-    required String lat,
-    required String lng,
-  }) = _GeoModel;
-  
-  factory GeoModel.fromJson(Map<String, dynamic> json) =>
-      _$GeoModelFromJson(json);
-  
-  Geo toEntity() => Geo(lat: lat, lng: lng);
-}
-
-@freezed
-class CompanyModel with _$CompanyModel {
-  const CompanyModel._();
-  
-  const factory CompanyModel({
-    required String name,
-    required String catchPhrase,
-    required String bs,
-  }) = _CompanyModel;
-  
-  factory CompanyModel.fromJson(Map<String, dynamic> json) =>
-      _$CompanyModelFromJson(json);
-  
-  Company toEntity() => Company(
-    name: name,
-    catchPhrase: catchPhrase,
-    bs: bs,
-  );
-}

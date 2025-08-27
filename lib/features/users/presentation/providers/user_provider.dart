@@ -17,13 +17,13 @@ final dioProvider = Provider<Dio>((ref) {
     connectTimeout: ApiConstants.connectTimeout,
     receiveTimeout: ApiConstants.receiveTimeout,
   ));
-  
+
   dio.interceptors.add(PrettyDioLogger(
     requestHeader: true,
     requestBody: true,
     responseHeader: true,
   ));
-  
+
   return dio;
 });
 
@@ -56,11 +56,33 @@ final getUserByIdUseCaseProvider = Provider<GetUserById>((ref) {
   return GetUserById(repository);
 });
 
-// State Providers
-final usersListProvider = FutureProvider<List<User>>((ref) async {
+// State Providers with required parameters
+class UsersListParams {
+  final int page;
+  final int perPage;
+  final String? search;
+  final String? status;
+  final String? role;
+
+  UsersListParams({
+    this.page = 1,
+    this.perPage = 10,
+    this.search,
+    this.status,
+    this.role,
+  });
+}
+
+final usersListProvider = FutureProvider.family<List<User>, UsersListParams>((ref, params) async {
   final getUsers = ref.watch(getUsersUseCaseProvider);
-  final result = await getUsers();
-  
+  final result = await getUsers(
+    page: params.page,
+    perPage: params.perPage,
+    search: params.search,
+    status: params.status,
+    role: params.role,
+  );
+
   return result.fold(
     (failure) => throw Exception(failure.message),
     (users) => users,
@@ -70,7 +92,7 @@ final usersListProvider = FutureProvider<List<User>>((ref) async {
 final userDetailProvider = FutureProvider.family<User, int>((ref, id) async {
   final getUserById = ref.watch(getUserByIdUseCaseProvider);
   final result = await getUserById(id);
-  
+
   return result.fold(
     (failure) => throw Exception(failure.message),
     (user) => user,

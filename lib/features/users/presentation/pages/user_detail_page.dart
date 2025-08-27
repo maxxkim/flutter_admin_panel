@@ -73,48 +73,6 @@ class UserDetailPage extends ConsumerWidget {
                       label: 'Website',
                       value: user.website!,
                     ),
-                  if (user.address != null) ...[
-                    const Divider(height: 32),
-                    const Text(
-                      'Address',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${user.address!.street}, ${user.address!.suite}\n'
-                      '${user.address!.city}, ${user.address!.zipcode}',
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                  if (user.company != null) ...[
-                    const Divider(height: 32),
-                    const Text(
-                      'Company',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      user.company!.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      user.company!.catchPhrase,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
